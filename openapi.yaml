@@ -25,9 +25,9 @@ paths:
                     example: ok
   /first-responder:
     post:
-      summary: First Responder Endpoint
-      description: An endpoint that handles first responder messages
-      operationId: firstResponderEndpoint
+      summary: First Responder
+      description: Get a quick response to fill the time before the full chatbot response
+      operationId: firstResponder
       requestBody:
         required: true
         content:
@@ -35,43 +35,37 @@ paths:
             schema:
               type: object
               properties:
-                body:
-                  type: object
-                  properties:
-                    email:
-                      type: string
-                      description: User email address
-                      example: ""
-                    messageHistory:
-                      type: array
-                      description: History of messages in the conversation
-                      items:
-                        type: object
-                        properties:
-                          message:
-                            type: string
-                            description: Message content
-                          timeElapsed:
-                            type: integer
-                            description: Time elapsed in seconds
-                          id:
-                            type: string
-                            description: Unique message identifier
-              required:
-                - body
-            example:
-              body:
-                email: ""
+                email:
+                  type: string
+                  description: User email address
+                  example: ""
                 messageHistory:
-                  - message: "I'm on it. Let me check the conference schedule for any sessions related to user adoption, and I'll get back to you right away."
-                    timeElapsed: 2
-                    id: "Qnk2aUes7E"
-                  - message: "I'm still searching for the most relevant sessions on user adoption at the MAU conference, I appreciate your patience and I'll have that information for you shortly."
-                    timeElapsed: 13
-                    id: "lDNV8gEPDA"
-                  - message: "I'm continuing to search through the conference schedule to find the most relevant sessions on user adoption that would be beneficial for a professional in the Solutions Provider industry, particularly in Customer Service and Management, and I'll have some recommendations for you very soon."
-                    timeElapsed: 24
-                    id: "xN1wmiY63x"
+                  type: array
+                  description: History of messages in the conversation
+                  items:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        description: Message content
+                      timeElapsed:
+                        type: integer
+                        description: Time elapsed in seconds
+                      id:
+                        type: string
+                        description: Unique message identifier
+            example:
+              email: ""
+              messageHistory:
+                - message: "I'm on it. Let me check the conference schedule for any sessions related to user adoption, and I'll get back to you right away."
+                  timeElapsed: 2
+                  id: "Qnk2aUes7E"
+                - message: "I'm still searching for the most relevant sessions on user adoption at the MAU conference, I appreciate your patience and I'll have that information for you shortly."
+                  timeElapsed: 13
+                  id: "lDNV8gEPDA"
+                - message: "I'm continuing to search through the conference schedule to find the most relevant sessions on user adoption that would be beneficial for a professional in the Solutions Provider industry, particularly in Customer Service and Management, and I'll have some recommendations for you very soon."
+                  timeElapsed: 24
+                  id: "xN1wmiY63x"
       responses:
         '200':
           description: Successful operation
