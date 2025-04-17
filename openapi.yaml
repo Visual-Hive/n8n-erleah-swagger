@@ -212,7 +212,7 @@ paths:
               example:
                 code: "500"
                 error: "some error"
- /chat:
+  /chat:
     post:
       summary: Chat Endpoint
       description: Endpoint for processing user chat messages and returning AI-generated responses
