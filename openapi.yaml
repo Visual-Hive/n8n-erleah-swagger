@@ -80,18 +80,24 @@ paths:
               example:
                 text: "I'm still digging through the conference schedule to find the most relevant sessions on user adoption that would be a great fit for someone in Customer Service and Management within the Solutions Provider industry, and I'll have some tailored recommendations for you shortly."
   /astraDbRecord:
-    get:
+    post:
       summary: Retrieve AstraDB Record
-      description: Retrieves a record from AstraDB based on the provided record ID
+      description: Retrieves a record from AstraDB based on the provided record ID in the request body
       operationId: getAstraDbRecord
-      parameters:
-        - name: recordId
-          in: query
-          required: true
-          description: The unique identifier of the record to retrieve
-          schema:
-            type: string
-          example: "fa189d31-4980-4653-989d-314980865362"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recordId:
+                  type: string
+                  description: The unique identifier of the record to retrieve
+              required:
+                - recordId
+            example:
+              recordId: "fa189d31-4980-4653-989d-314980865362"
       responses:
         '200':
           description: Successful operation
