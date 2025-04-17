@@ -212,3 +212,104 @@ paths:
               example:
                 code: "500"
                 error: "some error"
+ /chat:
+    post:
+      summary: Chat Endpoint
+      description: Endpoint for processing user chat messages and returning AI-generated responses
+      operationId: chatEndpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: User's email address
+                name:
+                  type: string
+                  description: User's full name
+                job:
+                  type: string
+                  description: User's job title
+                interests:
+                  type: string
+                  description: User's interests in the conference event
+                goals:
+                  type: string
+                  description: User's goals at the conference event
+                industry:
+                  type: string
+                  description: User's professional industry
+                skills:
+                  type: string
+                  description: User's professional skills
+                userPrompt:
+                  type: string
+                  description: User's message or question
+                session:
+                  type: string
+                  description: Unique identifier for the chat session
+              required:
+                - email
+                - userPrompt
+                - session
+            example:
+              email: "user email"
+              name: "user's full name"
+              job: "user's job title"
+              interests: "user's interests in the conference event"
+              goals: "user's goals at the conference event"
+              industry: "user's professional industry"
+              skills: "the user's professional skills"
+              userPrompt: "Can I cancel my pass and get a refund?"
+              session: "chat session unique id"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  output:
+                    type: object
+                    properties:
+                      assistantResponse:
+                        type: string
+                        description: AI-generated response to the user query
+                      resultsArray:
+                        type: array
+                        description: Array of relevant records used to generate the response
+                        items:
+                          type: object
+                          properties:
+                            Record_id:
+                              type: string
+                              description: Unique identifier of the record
+                            collection_name:
+                              type: string
+                              description: Name of the database collection
+                            why_chosen:
+                              type: string
+                              description: Explanation for why this record was chosen
+              example:
+                output:
+                  assistantResponse: "Here are some sessions related to user adoption at the MAU conference:\n\n1. **Redefining Active Users: A Scalable Approach for Growing App Portfolios**\n   - **Description:** This presentation highlights how the Fabulous team tackled the challenge of defining "Active User" within a growing portfolio of apps, features, and active events. Attendees will learn how to balance simplicity and precision in engagement analytics to optimize retention and campaign strategies across dynamic product ecosystems.\n   - **Track:** Innovation in Action Track\n   - **Time:** May 22, 2025, 14:00 - 14:20\n   - **Speakers:** Alice Brower, Filippo De Rose\n\n2. **Optimizing Onboarding and Monetization at LingQ**\n   - **Description:** This case study discussion will focus on improving onboarding, monetization, and overall growth of the LingQ language learning apps. Key insights include the role of UX design and user psychology in enhancing the onboarding journey.\n   - **Track:** Monetization & Revenue Optimization Track\n   - **Time:** May 22, 2025, 10:30 - 10:50\n   - **Speakers:** Mark Kaufmann, Thomas Siegl\n\n3. **Using Video & AI To Grow (and Keep) Users**\n   - **Description:** This session will cover strategies for acquiring and retaining users through creative strategy and AI, including insights from Nay's experience with over 200 million views on social media.\n   - **Track:** Innovation in Action Track\n   - **Time:** May 22, 2025, 09:00 - 09:20\n   - **Speakers:** Andrew Amann, Nay Cook-Nelson\n\n4. **7 Counterintuitive App Growth Strategies That Actually Work**\n   - **Description:** This session is designed for app developers and marketers looking for innovative ways to scale their apps. Key takeaways include why fewer features can lead to higher engagement and the impact of the \"free trial\" model on revenue.\n   - **Track:** Customer Experience, Retention, and User Acquisition Track\n   - **Time:** May 22, 2025, 14:00 - 14:20\n   - **Speaker:** Steve Young\n\n5. **Spotify & Meta: Boosting Profit Through Retention—Leveraging pLTV Models to Maximize MAU & Subscriptions**\n   - **Description:** This session will showcase how advanced predictive Lifetime Value modeling drives profitable user acquisition and sustained engagement, focusing on retention strategies.\n   - **Track:** Monetization & Revenue Optimization Track\n   - **Time:** May 21, 2025, 14:30 - 14:50\n   - **Speakers:** Luke Morrow, Parker Patel, Yfran Garcia\n\nThese sessions will provide valuable insights into user adoption strategies and are perfect for professionals in your field. If you have any more questions or need further assistance, feel free to ask!"
+                  resultsArray:
+                    - Record_id: "7f4aa8b6-e1cc-4419-8aa8-b6e1cc04194a"
+                      collection_name: "sessions"
+                      why_chosen: "This session focuses on defining 'Active User' which is crucial for user adoption."
+                    - Record_id: "28e941e0-043c-4887-a941-e0043c6887a2"
+                      collection_name: "sessions"
+                      why_chosen: "This case study discusses onboarding and monetization, key aspects of user adoption."
+                    - Record_id: "98fe0782-83e6-4de6-be07-8283e60de602"
+                      collection_name: "sessions"
+                      why_chosen: "This session covers strategies for user acquisition and retention, vital for user adoption."
+                    - Record_id: "c0cd5bd6-da38-4237-8d5b-d6da38a237a9"
+                      collection_name: "sessions"
+                      why_chosen: "This session provides innovative growth strategies that can enhance user adoption."
+                    - Record_id: "e2097bb8-9e46-41b8-897b-b89e46f1b8c1"
+                      collection_name: "sessions"
+                      why_chosen: "This session focuses on retention strategies, which are essential for maximizing user adoption."
