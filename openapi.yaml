@@ -296,7 +296,40 @@ paths:
                               description: Explanation for why this record was chosen
               example:
                 output:
-                  assistantResponse: "Here are some sessions related to user adoption at the MAU conference:\n\n1. **Redefining Active Users: A Scalable Approach for Growing App Portfolios**\n   - **Description:** This presentation highlights how the Fabulous team tackled the challenge of defining "Active User" within a growing portfolio of apps, features, and active events. Attendees will learn how to balance simplicity and precision in engagement analytics to optimize retention and campaign strategies across dynamic product ecosystems.\n   - **Track:** Innovation in Action Track\n   - **Time:** May 22, 2025, 14:00 - 14:20\n   - **Speakers:** Alice Brower, Filippo De Rose\n\n2. **Optimizing Onboarding and Monetization at LingQ**\n   - **Description:** This case study discussion will focus on improving onboarding, monetization, and overall growth of the LingQ language learning apps. Key insights include the role of UX design and user psychology in enhancing the onboarding journey.\n   - **Track:** Monetization & Revenue Optimization Track\n   - **Time:** May 22, 2025, 10:30 - 10:50\n   - **Speakers:** Mark Kaufmann, Thomas Siegl\n\n3. **Using Video & AI To Grow (and Keep) Users**\n   - **Description:** This session will cover strategies for acquiring and retaining users through creative strategy and AI, including insights from Nay's experience with over 200 million views on social media.\n   - **Track:** Innovation in Action Track\n   - **Time:** May 22, 2025, 09:00 - 09:20\n   - **Speakers:** Andrew Amann, Nay Cook-Nelson\n\n4. **7 Counterintuitive App Growth Strategies That Actually Work**\n   - **Description:** This session is designed for app developers and marketers looking for innovative ways to scale their apps. Key takeaways include why fewer features can lead to higher engagement and the impact of the \"free trial\" model on revenue.\n   - **Track:** Customer Experience, Retention, and User Acquisition Track\n   - **Time:** May 22, 2025, 14:00 - 14:20\n   - **Speaker:** Steve Young\n\n5. **Spotify & Meta: Boosting Profit Through Retention—Leveraging pLTV Models to Maximize MAU & Subscriptions**\n   - **Description:** This session will showcase how advanced predictive Lifetime Value modeling drives profitable user acquisition and sustained engagement, focusing on retention strategies.\n   - **Track:** Monetization & Revenue Optimization Track\n   - **Time:** May 21, 2025, 14:30 - 14:50\n   - **Speakers:** Luke Morrow, Parker Patel, Yfran Garcia\n\nThese sessions will provide valuable insights into user adoption strategies and are perfect for professionals in your field. If you have any more questions or need further assistance, feel free to ask!"
+                  assistantResponse: >-
+                    Here are some sessions related to user adoption at the MAU conference:
+
+                    1. **Redefining Active Users: A Scalable Approach for Growing App Portfolios**
+                       - **Description:** This presentation highlights how the Fabulous team tackled the challenge of defining "Active User" within a growing portfolio of apps, features, and active events. Attendees will learn how to balance simplicity and precision in engagement analytics to optimize retention and campaign strategies across dynamic product ecosystems.
+                       - **Track:** Innovation in Action Track
+                       - **Time:** May 22, 2025, 14:00 - 14:20
+                       - **Speakers:** Alice Brower, Filippo De Rose
+
+                    2. **Optimizing Onboarding and Monetization at LingQ**
+                       - **Description:** This case study discussion will focus on improving onboarding, monetization, and overall growth of the LingQ language learning apps. Key insights include the role of UX design and user psychology in enhancing the onboarding journey.
+                       - **Track:** Monetization & Revenue Optimization Track
+                       - **Time:** May 22, 2025, 10:30 - 10:50
+                       - **Speakers:** Mark Kaufmann, Thomas Siegl
+
+                    3. **Using Video & AI To Grow (and Keep) Users**
+                       - **Description:** This session will cover strategies for acquiring and retaining users through creative strategy and AI, including insights from Nay's experience with over 200 million views on social media.
+                       - **Track:** Innovation in Action Track
+                       - **Time:** May 22, 2025, 09:00 - 09:20
+                       - **Speakers:** Andrew Amann, Nay Cook-Nelson
+
+                    4. **7 Counterintuitive App Growth Strategies That Actually Work**
+                       - **Description:** This session is designed for app developers and marketers looking for innovative ways to scale their apps. Key takeaways include why fewer features can lead to higher engagement and the impact of the "free trial" model on revenue.
+                       - **Track:** Customer Experience, Retention, and User Acquisition Track
+                       - **Time:** May 22, 2025, 14:00 - 14:20
+                       - **Speaker:** Steve Young
+
+                    5. **Spotify & Meta: Boosting Profit Through Retention—Leveraging pLTV Models to Maximize MAU & Subscriptions**
+                       - **Description:** This session will showcase how advanced predictive Lifetime Value modeling drives profitable user acquisition and sustained engagement, focusing on retention strategies.
+                       - **Track:** Monetization & Revenue Optimization Track
+                       - **Time:** May 21, 2025, 14:30 - 14:50
+                       - **Speakers:** Luke Morrow, Parker Patel, Yfran Garcia
+
+                    These sessions will provide valuable insights into user adoption strategies and are perfect for professionals in your field. If you have any more questions or need further assistance, feel free to ask!
                   resultsArray:
                     - Record_id: "7f4aa8b6-e1cc-4419-8aa8-b6e1cc04194a"
                       collection_name: "sessions"
