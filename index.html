@@ -32,47 +32,7 @@
   <script>
     window.onload = function() {
       const ui = SwaggerUIBundle({
-        spec: {
-          openapi: "3.0.0",
-          info: {
-            title: "My API Documentation",
-            version: "1.0.0",
-            description: "Documentation for my API endpoints"
-          },
-          servers: [
-            {
-              url: "https://n8n-mau.visualhive.co",
-              description: "Production server"
-            }
-          ],
-          paths: {
-            "/webhook/d08d0991-55c5-4dbf-8b99-626cff9b314d": {
-              post: {
-                summary: "Test endpoint",
-                description: "A simple test endpoint that returns an OK response",
-                operationId: "testEndpoint",
-                responses: {
-                  "200": {
-                    description: "Successful operation",
-                    content: {
-                      "application/json": {
-                        schema: {
-                          type: "object",
-                          properties: {
-                            response: {
-                              type: "string",
-                              example: "ok"
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
+        url: "openapi.yaml", // Load the YAML file
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [
