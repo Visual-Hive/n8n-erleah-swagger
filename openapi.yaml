@@ -54,18 +54,45 @@ paths:
                       id:
                         type: string
                         description: Unique message identifier
+                elapsedTime:
+                  type: integer
+                  description: Time elapsed since the conversation started (in seconds)
+                name:
+                  type: string
+                  description: User's full name
+                job:
+                  type: string
+                  description: User's job title
+                interests:
+                  type: string
+                  description: User's interests in the conference event
+                goals:
+                  type: string
+                  description: User's goals at the conference event
+                userType:
+                  type: string
+                  description: Type of user (e.g., Technical Professional, Business Professional)
+                department:
+                  type: string
+                  description: User's department (e.g., Data and Analytics, Marketing)
+                userPrompt:
+                  type: string
+                  description: User's current message or question
+                id:
+                  type: string
+                  description: Unique identifier for the current message
             example:
               email: ""
-              messageHistory:
-                - message: "I'm on it. Let me check the conference schedule for any sessions related to user adoption, and I'll get back to you right away."
-                  timeElapsed: 2
-                  id: "Qnk2aUes7E"
-                - message: "I'm still searching for the most relevant sessions on user adoption at the MAU conference, I appreciate your patience and I'll have that information for you shortly."
-                  timeElapsed: 13
-                  id: "lDNV8gEPDA"
-                - message: "I'm continuing to search through the conference schedule to find the most relevant sessions on user adoption that would be beneficial for a professional in the Solutions Provider industry, particularly in Customer Service and Management, and I'll have some recommendations for you very soon."
-                  timeElapsed: 24
-                  id: "xN1wmiY63x"
+              messageHistory: []
+              elapsedTime: 1
+              name: "Bogdan"
+              job: "Founder"
+              interests: ""
+              goals: ""
+              userType: "Technical Professional"
+              department: "Data and Analytics"
+              userPrompt: "How can I access the app?"
+              id: "H8FtVZLDEt"
       responses:
         '200':
           description: Successful operation
@@ -78,7 +105,7 @@ paths:
                     type: string
                     description: Response message
               example:
-                text: "I'm still digging through the conference schedule to find the most relevant sessions on user adoption that would be a great fit for someone in Customer Service and Management within the Solutions Provider industry, and I'll have some tailored recommendations for you shortly."
+                text: "I'm still digging through the conference schedule to find the most relevant sessions on user adoption that would be a great fit for someone in Customer Service and Management within the Solutions Provider industry, and I'll have some tailored recommendations for you shortly."  
   /astraDbRecord:
     post:
       summary: Retrieve AstraDB Record
