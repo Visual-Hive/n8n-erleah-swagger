@@ -1,17 +1,17 @@
 openapi: 3.0.0
 info:
-  title: My API Documentation
+  title: Erleah n8n documentation
   version: 1.0.0
-  description: Documentation for my API endpoints
+  description: Documentation for Erleah n8n workflow endpoints
 servers:
-  - url: https://n8n-sandbox.visualhive.co
-    description: Production server
+  - url: https://n8n-sandbox.visualhive.co/webhook
+    description: Erleah n8n server
 paths:
-  /webhook/d08d0991-55c5-4dbf-8b99-626cff9b314d:
+  /health:
     post:
-      summary: Test endpoint
+      summary: Health check
       description: A simple test endpoint that returns an OK response
-      operationId: testEndpoint
+      operationId: healthCheck
       responses:
         '200':
           description: Successful operation
