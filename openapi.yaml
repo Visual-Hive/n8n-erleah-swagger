@@ -79,3 +79,136 @@ paths:
                     description: Response message
               example:
                 text: "I'm still digging through the conference schedule to find the most relevant sessions on user adoption that would be a great fit for someone in Customer Service and Management within the Solutions Provider industry, and I'll have some tailored recommendations for you shortly."
+  /astraDbRecord:
+    get:
+      summary: Retrieve AstraDB Record
+      description: Retrieves a record from AstraDB based on the provided record ID
+      operationId: getAstraDbRecord
+      parameters:
+        - name: recordId
+          in: query
+          required: true
+          description: The unique identifier of the record to retrieve
+          schema:
+            type: string
+          example: "fa189d31-4980-4653-989d-314980865362"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    Response:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          description: Record unique identifier
+                        ExhibitorID:
+                          type: string
+                          description: Exhibitor unique identifier
+                        CompanyName:
+                          type: string
+                          description: Name of the company
+                        BoothNumber:
+                          type: string
+                          description: Booth number at the event
+                        WebsiteURL:
+                          type: string
+                          description: Company website URL
+                        LogoURL:
+                          type: string
+                          description: URL to company logo
+                        Description:
+                          type: string
+                          description: Company description
+                        IndustryFocus:
+                          type: string
+                          description: Industries the company focuses on (pipe-separated values)
+                        ProductServiceCategories:
+                          type: string
+                          description: Categories of products or services (pipe-separated values)
+                        TechnologyKeywords:
+                          type: string
+                          description: Technology-related keywords (pipe-separated values)
+                        ProblemsSolved:
+                          type: string
+                          description: Problems the company solves (pipe-separated values)
+                        TargetAttendeePositions:
+                          type: string
+                          description: Target job positions (pipe-separated values)
+                        TargetCompanyTypes:
+                          type: string
+                          description: Target company types (pipe-separated values)
+                        TargetGeographicMarkets:
+                          type: string
+                          description: Target geographic markets (pipe-separated values)
+                        CompanySize:
+                          type: string
+                          description: Company size category
+                        CompanySizeNr:
+                          type: string
+                          description: Company size range
+                        ExhibitorGoals:
+                          type: string
+                          description: Exhibitor goals at the event (pipe-separated values)
+                        Event:
+                          type: string
+                          description: Event name
+                        content:
+                          type: string
+                          description: Formatted content information
+                        metadata:
+                          type: string
+                          description: Additional metadata in JSON string format
+                    metadata:
+                      type: string
+                      description: Metadata in JSON string format
+                    CollectionName:
+                      type: string
+                      description: Name of the database collection
+              example:
+                - Response:
+                    _id: "fa189d31-4980-4653-989d-314980865362"
+                    ExhibitorID: "IS-EXH-045"
+                    CompanyName: "CircuTech Materials"
+                    BoothNumber: "B338"
+                    WebsiteURL: "https://www.circutechmat.com"
+                    LogoURL: "https://cdn.fakesite.com/logos/is-exh-045.png"
+                    Description: "Developing advanced materials and processes for circular economy applications, focusing on recycling and sustainable manufacturing."
+                    IndustryFocus: "Sustainability|Manufacturing|Materials Science"
+                    ProductServiceCategories: "Sustainable Materials|Advanced Recycling Tech|Circular Economy Consulting"
+                    TechnologyKeywords: "Materials Science|Chemical Engineering|Sustainability"
+                    ProblemsSolved: "Waste Reduction|Resource Efficiency|Sustainable Products"
+                    TargetAttendeePositions: "Materials Scientist|Sustainability Manager|Manufacturing Engineer"
+                    TargetCompanyTypes: "Manufacturer|Consumer Goods Company"
+                    TargetGeographicMarkets: "Europe"
+                    CompanySize: "Startup"
+                    CompanySizeNr: "1-50"
+                    ExhibitorGoals: "Market Research|Brand Awareness"
+                    Event: "InnovateSphere 2025"
+                    content: "Company\": \"CircuTech Materials\", \"; Sectors\": \"Sustainability|Manufacturing|Materials Science\", \"Stand\": \"B338\", \"Description\": \"Developing advanced materials and processes for circular economy applications, focusing on recycling and sustainable manufacturing.\", \"Products & Services\": \"Sustainable Materials|Advanced Recycling Tech|Circular Economy Consulting\", \"Tech\": \"Materials Science|Chemical Engineering|Sustainability\", \"Problems Solved\": \"Waste Reduction|Resource Efficiency|Sustainable Products\", \"Target Audience\": \"Materials Scientist|Sustainability Manager|Manufacturing Engineer\", \"Target Company\": \"Manufacturer|Consumer Goods Company\", \"Target Geographically\": \"Europe\", \"Company Size\": \"Startup\", \"Company Goals\": \"Market Research|Brand Awareness"
+                    metadata: "{\"exhibitor_id\": \"IS-EXH-045\", \"event\": \"InnovateSphere 2025\", \"company\": \"CircuTech Materials\", \"sectors\": \"Sustainability|Manufacturing|Materials Science\", \"Taget\": \"Europe\"}"
+                  metadata: "{\"exhibitor_id\": \"IS-EXH-045\", \"event\": \"InnovateSphere 2025\", \"company\": \"CircuTech Materials\", \"sectors\": \"Sustainability|Manufacturing|Materials Science\", \"Taget\": \"Europe\"}"
+                  CollectionName: "exhibitors"
+        '500':
+          description: Error retrieving record
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Error code
+                    example: "500"
+                  error:
+                    type: string
+                    description: Error message
+              example:
+                code: "500"
+                error: "some error"
