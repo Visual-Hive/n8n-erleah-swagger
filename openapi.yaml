@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: Documentation for my API endpoints
 servers:
-  - url: https://n8n-mau.visualhive.co
+  - url: https://n8n-sandbox.visualhive.co
     description: Production server
 paths:
   /webhook/d08d0991-55c5-4dbf-8b99-626cff9b314d:
