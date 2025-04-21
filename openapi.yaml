@@ -378,7 +378,7 @@ paths:
                       why_chosen: "This session provides innovative growth strategies that can enhance user adoption."
                     - Record_id: "e2097bb8-9e46-41b8-897b-b89e46f1b8c1"
                       collection_name: "sessions"
-                      why_chosen: "This session focuses on retention strategies, which are essential for maximizing user adoption.
+                      why_chosen: "This session focuses on retention strategies, which are essential for maximizing user adoption."
   /getCards:
     post:
       summary: Get Cards
@@ -430,4 +430,3 @@ paths:
                     $similarity: 0.7808024
                   - metadata: '{"title": "Machine Learning in Product Development", "event": "InnovateSphere 2025", "start_unix": "1761594300.", "end_unix": "1761597900.", "session_id": "IS-SESS-045", "location": "Tech Pavilion - Main Stage", "speakers": "IS-SPK-073, IS-SPK-074", "target_audience": "Product Manager|Developer|Data Scientist", "track": "AI & Machine Learning", "session_format": "Workshop", "labels": "Machine Learning|Product Development|AI Implementation|Technical", "access": "Premium Pass"}'
                     $similarity: 0.7532198
-
