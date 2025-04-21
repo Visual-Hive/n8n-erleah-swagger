@@ -378,4 +378,56 @@ paths:
                       why_chosen: "This session provides innovative growth strategies that can enhance user adoption."
                     - Record_id: "e2097bb8-9e46-41b8-897b-b89e46f1b8c1"
                       collection_name: "sessions"
-                      why_chosen: "This session focuses on retention strategies, which are essential for maximizing user adoption."
+                      why_chosen: "This session focuses on retention strategies, which are essential for maximizing user adoption.
+  /getCards:
+    post:
+      summary: Get Cards
+      description: Retrieves card information based on user prompt (user profile + request)
+      operationId: getCards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prompt:
+                  type: string
+                  description: Vector search prompt, using user profile and/or user request
+                  example: "sessions related to AI tech for a marketing manager looking to improve their AI knowledge"
+                action:
+                  type: string
+                  description: Type of record to search for
+                  enum: [find_sessions, find_exhibitors, find_speakers]
+              required:
+                - prompt
+                - action
+            example:
+              prompt: "sessions related to AI tech"
+              action: "find_sessions"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        metadata:
+                          type: string
+                          description: JSON string containing entity metadata
+                        $similarity:
+                          type: number
+                          description: Similarity score indicating relevance to the prompt
+              example:
+                results:
+                  - metadata: '{"title": "AI for Good: Tackling Global Challenges with Intelligent Tech", "event": "InnovateSphere 2025", "start_unix": "1761580800.", "end_unix": "1761584400.", "session_id": "IS-SESS-022", "location": "Data Dome - Room A", "speakers": "IS-SPK-028, IS-SPK-029", "target_audience": "All Attendees|Researcher|NGO Leader|Policy Maker", "track": "AI & Machine Learning", "session_format": "Breakout Session", "labels": "AI for Good|Social Impact|Sustainability AI|Healthcare AI|Humanitarian Tech", "access": "Free with Pass"}'
+                    $similarity: 0.7808024
+                  - metadata: '{"title": "Machine Learning in Product Development", "event": "InnovateSphere 2025", "start_unix": "1761594300.", "end_unix": "1761597900.", "session_id": "IS-SESS-045", "location": "Tech Pavilion - Main Stage", "speakers": "IS-SPK-073, IS-SPK-074", "target_audience": "Product Manager|Developer|Data Scientist", "track": "AI & Machine Learning", "session_format": "Workshop", "labels": "Machine Learning|Product Development|AI Implementation|Technical", "access": "Premium Pass"}'
+                    $similarity: 0.7532198
+
