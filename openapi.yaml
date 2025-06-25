@@ -1,20 +1,49 @@
 openapi: 3.0.0
 info:
-  title: Erleah n8n documentation
+  title: Erleah Backend Documentation
   version: 1.0.0
-  description: Documentation for Erleah n8n workflow endpoints
+  description: |
+    Documentation for Erleah backend endpoints
+    
+    This API documentation covers two separate servers:
+    - **N8N Server**: Workflow automation, AI chat, and data processing endpoints
+    - **Directus Server**: Database operations for conversations and messages
+    
+    Each endpoint is clearly tagged to indicate which server it belongs to.
+
 servers:
   - url: https://n8n-sandbox.visualhive.co/webhook
-    description: Erleah n8n server
+    description: N8N workflow server - AI chat, data processing, and webhooks
+  - url: https://directus.visualhive.co
+    description: Directus database server - Content management and database operations
+
+tags:
+  - name: N8N Server
+    description: Endpoints running on the N8N workflow server for AI chat and data processing
+    externalDocs:
+      description: Learn more about N8N
+      url: https://n8n.io
+  - name: Directus Server
+    description: Endpoints running on the Directus database server for data persistence
+    externalDocs:
+      description: Learn more about Directus
+      url: https://directus.io
+
 paths:
+  # ============ N8N SERVER ENDPOINTS ============
   /health:
     post:
+      tags:
+        - N8N Server
       summary: Health check
-      description: A simple test endpoint that returns an OK response
+      description: A simple test endpoint that returns an OK response to verify server status
       operationId: healthCheck
+      servers:
+        - url: https://n8n-sandbox.visualhive.co/webhook
+          description: N8N workflow server
       responses:
         '200':
-          description: Successful operation
+          description: Server is healthy and operational
           content:
             application/json:
               schema:
@@ -23,79 +52,32 @@ paths:
                   response:
                     type: string
                     example: ok
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /first-responder:
     post:
+      tags:
+        - N8N Server
       summary: First Responder
-      description: Get a quick response to fill the time before the full chatbot response
+      description: Get a quick response to fill the time before the full chatbot response. This provides immediate feedback to users while the main AI processes their request.
       operationId: firstResponder
+      servers:
+        - url: https://n8n-sandbox.visualhive.co/webhook
+          description: N8N workflow server
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  description: User email address
-                  example: ""
-                messageHistory:
-                  type: array
-                  description: History of messages in the conversation
-                  items:
-                    type: object
-                    properties:
-                      message:
-                        type: string
-                        description: Message content
-                      timeElapsed:
-                        type: integer
-                        description: Time elapsed in seconds
-                      id:
-                        type: string
-                        description: Unique message identifier
-                elapsedTime:
-                  type: integer
-                  description: Time elapsed since the conversation started (in seconds)
-                name:
-                  type: string
-                  description: User's full name
-                job:
-                  type: string
-                  description: User's job title
-                interests:
-                  type: string
-                  description: User's interests in the conference event
-                goals:
-                  type: string
-                  description: User's goals at the conference event
-                userType:
-                  type: string
-                  description: Type of user (e.g., Technical Professional, Business Professional)
-                department:
-                  type: string
-                  description: User's department (e.g., Data and Analytics, Marketing)
-                userPrompt:
-                  type: string
-                  description: User's current message or question
-                id:
-                  type: string
-                  description: Unique identifier for the current message
-            example:
-              email: ""
-              messageHistory: []
-              elapsedTime: 1
-              name: "Bogdan"
-              job: "Founder"
-              interests: ""
-              goals: ""
-              userType: "Technical Professional"
-              department: "Data and Analytics"
-              userPrompt: "How can I access the app?"
-              id: "H8FtVZLDEt"
+              $ref: '#/components/schemas/FirstResponderRequest'
       responses:
         '200':
-          description: Successful operation
+          description: Quick response generated successfully
           content:
             application/json:
               schema:
@@ -103,14 +85,31 @@ paths:
                 properties:
                   text:
                     type: string
-                    description: Response message
-              example:
-                text: "I'm still digging through the conference schedule to find the most relevant sessions on user adoption that would be a great fit for someone in Customer Service and Management within the Solutions Provider industry, and I'll have some tailored recommendations for you shortly."  
+                    description: Quick response message to display while processing
+                    example: "I'm still digging through the conference schedule to find the most relevant sessions on user adoption that would be a great fit for someone in Customer Service and Management within the Solutions Provider industry, and I'll have some tailored recommendations for you shortly."
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /astraDbRecord:
     post:
+      tags:
+        - N8N Server
       summary: Retrieve AstraDB Record
-      description: Retrieves a record from AstraDB based on the provided record ID in the request body
+      description: Retrieves a specific record from AstraDB based on the provided record ID. Used to fetch detailed information about exhibitors, sessions, or speakers.
       operationId: getAstraDbRecord
+      servers:
+        - url: https://n8n-sandbox.visualhive.co/webhook
+          description: N8N workflow server
       requestBody:
         required: true
         content:
@@ -121,113 +120,28 @@ paths:
                 recordId:
                   type: string
                   description: The unique identifier of the record to retrieve
+                  example: "fa189d31-4980-4653-989d-314980865362"
               required:
                 - recordId
-            example:
-              recordId: "fa189d31-4980-4653-989d-314980865362"
       responses:
         '200':
-          description: Successful operation
+          description: Record retrieved successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    Response:
-                      type: object
-                      properties:
-                        _id:
-                          type: string
-                          description: Record unique identifier
-                        ExhibitorID:
-                          type: string
-                          description: Exhibitor unique identifier
-                        CompanyName:
-                          type: string
-                          description: Name of the company
-                        BoothNumber:
-                          type: string
-                          description: Booth number at the event
-                        WebsiteURL:
-                          type: string
-                          description: Company website URL
-                        LogoURL:
-                          type: string
-                          description: URL to company logo
-                        Description:
-                          type: string
-                          description: Company description
-                        IndustryFocus:
-                          type: string
-                          description: Industries the company focuses on (pipe-separated values)
-                        ProductServiceCategories:
-                          type: string
-                          description: Categories of products or services (pipe-separated values)
-                        TechnologyKeywords:
-                          type: string
-                          description: Technology-related keywords (pipe-separated values)
-                        ProblemsSolved:
-                          type: string
-                          description: Problems the company solves (pipe-separated values)
-                        TargetAttendeePositions:
-                          type: string
-                          description: Target job positions (pipe-separated values)
-                        TargetCompanyTypes:
-                          type: string
-                          description: Target company types (pipe-separated values)
-                        TargetGeographicMarkets:
-                          type: string
-                          description: Target geographic markets (pipe-separated values)
-                        CompanySize:
-                          type: string
-                          description: Company size category
-                        CompanySizeNr:
-                          type: string
-                          description: Company size range
-                        ExhibitorGoals:
-                          type: string
-                          description: Exhibitor goals at the event (pipe-separated values)
-                        Event:
-                          type: string
-                          description: Event name
-                        content:
-                          type: string
-                          description: Formatted content information
-                        metadata:
-                          type: string
-                          description: Additional metadata in JSON string format
-                    metadata:
-                      type: string
-                      description: Metadata in JSON string format
-                    CollectionName:
-                      type: string
-                      description: Name of the database collection
-              example:
-                - Response:
-                    _id: "fa189d31-4980-4653-989d-314980865362"
-                    ExhibitorID: "IS-EXH-045"
-                    CompanyName: "CircuTech Materials"
-                    BoothNumber: "B338"
-                    WebsiteURL: "https://www.circutechmat.com"
-                    LogoURL: "https://cdn.fakesite.com/logos/is-exh-045.png"
-                    Description: "Developing advanced materials and processes for circular economy applications, focusing on recycling and sustainable manufacturing."
-                    IndustryFocus: "Sustainability|Manufacturing|Materials Science"
-                    ProductServiceCategories: "Sustainable Materials|Advanced Recycling Tech|Circular Economy Consulting"
-                    TechnologyKeywords: "Materials Science|Chemical Engineering|Sustainability"
-                    ProblemsSolved: "Waste Reduction|Resource Efficiency|Sustainable Products"
-                    TargetAttendeePositions: "Materials Scientist|Sustainability Manager|Manufacturing Engineer"
-                    TargetCompanyTypes: "Manufacturer|Consumer Goods Company"
-                    TargetGeographicMarkets: "Europe"
-                    CompanySize: "Startup"
-                    CompanySizeNr: "1-50"
-                    ExhibitorGoals: "Market Research|Brand Awareness"
-                    Event: "InnovateSphere 2025"
-                    content: "Company\": \"CircuTech Materials\", \"; Sectors\": \"Sustainability|Manufacturing|Materials Science\", \"Stand\": \"B338\", \"Description\": \"Developing advanced materials and processes for circular economy applications, focusing on recycling and sustainable manufacturing.\", \"Products & Services\": \"Sustainable Materials|Advanced Recycling Tech|Circular Economy Consulting\", \"Tech\": \"Materials Science|Chemical Engineering|Sustainability\", \"Problems Solved\": \"Waste Reduction|Resource Efficiency|Sustainable Products\", \"Target Audience\": \"Materials Scientist|Sustainability Manager|Manufacturing Engineer\", \"Target Company\": \"Manufacturer|Consumer Goods Company\", \"Target Geographically\": \"Europe\", \"Company Size\": \"Startup\", \"Company Goals\": \"Market Research|Brand Awareness"
-                    metadata: "{\"exhibitor_id\": \"IS-EXH-045\", \"event\": \"InnovateSphere 2025\", \"company\": \"CircuTech Materials\", \"sectors\": \"Sustainability|Manufacturing|Materials Science\", \"Taget\": \"Europe\"}"
-                  metadata: "{\"exhibitor_id\": \"IS-EXH-045\", \"event\": \"InnovateSphere 2025\", \"company\": \"CircuTech Materials\", \"sectors\": \"Sustainability|Manufacturing|Materials Science\", \"Taget\": \"Europe\"}"
-                  CollectionName: "exhibitors"
+                $ref: '#/components/schemas/AstraDbRecordResponse'
+        '400':
+          description: Invalid record ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Error retrieving record
           content:
@@ -237,153 +151,57 @@ paths:
                 properties:
                   code:
                     type: string
-                    description: Error code
                     example: "500"
                   error:
                     type: string
-                    description: Error message
-              example:
-                code: "500"
-                error: "some error"
+                    example: "Database connection failed"
+
   /chat:
     post:
+      tags:
+        - N8N Server
       summary: Chat Endpoint
-      description: Endpoint for processing user chat messages and returning AI-generated responses
+      description: Main chat endpoint for processing user messages and returning AI-generated responses with relevant conference data
       operationId: chatEndpoint
+      servers:
+        - url: https://n8n-sandbox.visualhive.co/webhook
+          description: N8N workflow server
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  description: User's email address
-                name:
-                  type: string
-                  description: User's full name
-                job:
-                  type: string
-                  description: User's job title
-                interests:
-                  type: string
-                  description: User's interests in the conference event
-                goals:
-                  type: string
-                  description: User's goals at the conference event
-                industry:
-                  type: string
-                  description: User's professional industry
-                skills:
-                  type: string
-                  description: User's professional skills
-                userPrompt:
-                  type: string
-                  description: User's message or question
-                session:
-                  type: string
-                  description: Unique identifier for the chat session
-              required:
-                - email
-                - userPrompt
-                - session
-            example:
-              email: "user email"
-              name: "user's full name"
-              job: "user's job title"
-              interests: "user's interests in the conference event"
-              goals: "user's goals at the conference event"
-              industry: "user's professional industry"
-              skills: "the user's professional skills"
-              userPrompt: "Can I cancel my pass and get a refund?"
-              session: "chat session unique id"
+              $ref: '#/components/schemas/ChatRequest'
       responses:
         '200':
-          description: Successful operation
+          description: Chat response generated successfully
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  output:
-                    type: object
-                    properties:
-                      assistantResponse:
-                        type: string
-                        description: AI-generated response to the user query
-                      resultsArray:
-                        type: array
-                        description: Array of relevant records used to generate the response
-                        items:
-                          type: object
-                          properties:
-                            Record_id:
-                              type: string
-                              description: Unique identifier of the record
-                            collection_name:
-                              type: string
-                              description: Name of the database collection
-                            why_chosen:
-                              type: string
-                              description: Explanation for why this record was chosen
-              example:
-                output:
-                  assistantResponse: >-
-                    Here are some sessions related to user adoption at the MAU conference:
+                $ref: '#/components/schemas/ChatResponse'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error during chat processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
-                    1. **Redefining Active Users: A Scalable Approach for Growing App Portfolios**
-                       - **Description:** This presentation highlights how the Fabulous team tackled the challenge of defining "Active User" within a growing portfolio of apps, features, and active events. Attendees will learn how to balance simplicity and precision in engagement analytics to optimize retention and campaign strategies across dynamic product ecosystems.
-                       - **Track:** Innovation in Action Track
-                       - **Time:** May 22, 2025, 14:00 - 14:20
-                       - **Speakers:** Alice Brower, Filippo De Rose
-
-                    2. **Optimizing Onboarding and Monetization at LingQ**
-                       - **Description:** This case study discussion will focus on improving onboarding, monetization, and overall growth of the LingQ language learning apps. Key insights include the role of UX design and user psychology in enhancing the onboarding journey.
-                       - **Track:** Monetization & Revenue Optimization Track
-                       - **Time:** May 22, 2025, 10:30 - 10:50
-                       - **Speakers:** Mark Kaufmann, Thomas Siegl
-
-                    3. **Using Video & AI To Grow (and Keep) Users**
-                       - **Description:** This session will cover strategies for acquiring and retaining users through creative strategy and AI, including insights from Nay's experience with over 200 million views on social media.
-                       - **Track:** Innovation in Action Track
-                       - **Time:** May 22, 2025, 09:00 - 09:20
-                       - **Speakers:** Andrew Amann, Nay Cook-Nelson
-
-                    4. **7 Counterintuitive App Growth Strategies That Actually Work**
-                       - **Description:** This session is designed for app developers and marketers looking for innovative ways to scale their apps. Key takeaways include why fewer features can lead to higher engagement and the impact of the "free trial" model on revenue.
-                       - **Track:** Customer Experience, Retention, and User Acquisition Track
-                       - **Time:** May 22, 2025, 14:00 - 14:20
-                       - **Speaker:** Steve Young
-
-                    5. **Spotify & Meta: Boosting Profit Through Retention—Leveraging pLTV Models to Maximize MAU & Subscriptions**
-                       - **Description:** This session will showcase how advanced predictive Lifetime Value modeling drives profitable user acquisition and sustained engagement, focusing on retention strategies.
-                       - **Track:** Monetization & Revenue Optimization Track
-                       - **Time:** May 21, 2025, 14:30 - 14:50
-                       - **Speakers:** Luke Morrow, Parker Patel, Yfran Garcia
-
-                    These sessions will provide valuable insights into user adoption strategies and are perfect for professionals in your field. If you have any more questions or need further assistance, feel free to ask!
-                  resultsArray:
-                    - Record_id: "7f4aa8b6-e1cc-4419-8aa8-b6e1cc04194a"
-                      collection_name: "sessions"
-                      why_chosen: "This session focuses on defining 'Active User' which is crucial for user adoption."
-                    - Record_id: "28e941e0-043c-4887-a941-e0043c6887a2"
-                      collection_name: "sessions"
-                      why_chosen: "This case study discusses onboarding and monetization, key aspects of user adoption."
-                    - Record_id: "98fe0782-83e6-4de6-be07-8283e60de602"
-                      collection_name: "sessions"
-                      why_chosen: "This session covers strategies for user acquisition and retention, vital for user adoption."
-                    - Record_id: "c0cd5bd6-da38-4237-8d5b-d6da38a237a9"
-                      collection_name: "sessions"
-                      why_chosen: "This session provides innovative growth strategies that can enhance user adoption."
-                    - Record_id: "e2097bb8-9e46-41b8-897b-b89e46f1b8c1"
-                      collection_name: "sessions"
-                      why_chosen: "This session focuses on retention strategies, which are essential for maximizing user adoption."
   /getCards:
     post:
+      tags:
+        - N8N Server
       summary: Get Cards
-      description: Retrieves card information based on user prompt (user profile + request)
+      description: Retrieves relevant cards (sessions, exhibitors, or speakers) based on user prompt and search criteria using vector similarity
       operationId: getCards
+      servers:
+        - url: https://n8n-sandbox.visualhive.co/webhook
+          description: N8N workflow server
       requestBody:
         required: true
         content:
@@ -399,34 +217,906 @@ paths:
                   type: string
                   description: Type of record to search for
                   enum: [find_sessions, find_exhibitors, find_speakers]
+                  example: "find_sessions"
+                limit:
+                  type: integer
+                  description: Maximum number of results to return
+                  default: 10
+                  minimum: 1
+                  maximum: 50
               required:
                 - prompt
                 - action
-            example:
-              prompt: "sessions related to AI tech"
-              action: "find_sessions"
       responses:
         '200':
-          description: Successful operation
+          description: Cards retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardsResponse'
+        '400':
+          description: Invalid search parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error during search
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ============ DIRECTUS SERVER ENDPOINTS ============
+  
+  # Conversation CRUD Operations
+  /items/conversation:
+    get:
+      tags:
+        - Directus Server
+      summary: Get all conversations
+      description: Retrieve all conversations from the database with optional filtering and pagination
+      operationId: getAllConversations
+      servers:
+        - url: https://directus.visualhive.co
+          description: Directus database server
+      parameters:
+        - name: limit
+          in: query
+          description: Number of items to return
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Number of items to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort field (prefix with '-' for descending)
+          required: false
+          schema:
+            type: string
+            default: "-date_created"
+            example: "-date_created"
+        - name: filter
+          in: query
+          description: Filter conversations (JSON format)
+          required: false
+          schema:
+            type: string
+            example: '{"title":{"_contains":"AI"}}'
+      responses:
+        '200':
+          description: Conversations retrieved successfully
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  results:
+                  data:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        metadata:
-                          type: string
-                          description: JSON string containing entity metadata
-                        $similarity:
-                          type: number
-                          description: Similarity score indicating relevance to the prompt
-              example:
-                results:
-                  - metadata: '{"title": "AI for Good: Tackling Global Challenges with Intelligent Tech", "event": "InnovateSphere 2025", "start_unix": "1761580800.", "end_unix": "1761584400.", "session_id": "IS-SESS-022", "location": "Data Dome - Room A", "speakers": "IS-SPK-028, IS-SPK-029", "target_audience": "All Attendees|Researcher|NGO Leader|Policy Maker", "track": "AI & Machine Learning", "session_format": "Breakout Session", "labels": "AI for Good|Social Impact|Sustainability AI|Healthcare AI|Humanitarian Tech", "access": "Free with Pass"}'
-                    $similarity: 0.7808024
-                  - metadata: '{"title": "Machine Learning in Product Development", "event": "InnovateSphere 2025", "start_unix": "1761594300.", "end_unix": "1761597900.", "session_id": "IS-SESS-045", "location": "Tech Pavilion - Main Stage", "speakers": "IS-SPK-073, IS-SPK-074", "target_audience": "Product Manager|Developer|Data Scientist", "track": "AI & Machine Learning", "session_format": "Workshop", "labels": "Machine Learning|Product Development|AI Implementation|Technical", "access": "Premium Pass"}'
-                    $similarity: 0.7532198
+                      $ref: '#/components/schemas/Conversation'
+                  meta:
+                    $ref: '#/components/schemas/DirectusMetadata'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+
+    post:
+      tags:
+        - Directus Server
+      summary: Create new conversation
+      description: Create a new conversation in the database
+      operationId: createConversation
+      servers:
+        - url: https://directus.visualhive.co
+          description: Directus database server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                  description: Title of the conversation
+                  example: "Conference Questions"
+                  maxLength: 255
+      responses:
+        '201':
+          description: Conversation created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Conversation'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+
+  /items/conversation/{id}:
+    get:
+      tags:
+        - Directus Server
+      summary: Get conversation by ID
+      description: Retrieve a specific conversation by its UUID
+      operationId: getConversationById
+      servers:
+        - url: https://directus.visualhive.co
+          description: Directus database server
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Conversation UUID
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Conversation retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Conversation'
+        '404':
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+
+    patch:
+      tags:
+        - Directus Server
+      summary: Update conversation
+      description: Update an existing conversation's title
+      operationId: updateConversation
+      servers:
+        - url: https://directus.visualhive.co
+          description: Directus database server
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Conversation UUID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Updated title of the conversation
+                  maxLength: 255
+      responses:
+        '200':
+          description: Conversation updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Conversation'
+        '404':
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+
+    delete:
+      tags:
+        - Directus Server
+      summary: Delete conversation
+      description: Delete a conversation and all associated messages
+      operationId: deleteConversation
+      servers:
+        - url: https://directus.visualhive.co
+          description: Directus database server
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Conversation UUID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Conversation deleted successfully
+        '404':
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+
+  # Message CRUD Operations
+  /items/message:
+    get:
+      tags:
+        - Directus Server
+      summary: Get all messages
+      description: Retrieve all messages from the database with optional filtering and pagination
+      operationId: getAllMessages
+      servers:
+        - url: https://directus.visualhive.co
+          description: Directus database server
+      parameters:
+        - name: limit
+          in: query
+          description: Number of items to return
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 1
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Number of items to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: sort
+          in: query
+          description: Sort field (prefix with '-' for descending)
+          required: false
+          schema:
+            type: string
+            default: "date_created"
+        - name: filter
+          in: query
+          description: Filter messages (JSON format)
+          required: false
+          schema:
+            type: string
+            example: '{"conversation":{"_eq":"550e8400-e29b-41d4-a716-446655440000"}}'
+      responses:
+        '200':
+          description: Messages retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+                  meta:
+                    $ref: '#/components/schemas/DirectusMetadata'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+
+    post:
+      tags:
+        - Directus Server
+      summary: Create new message
+      description: Create a new message in a conversation
+      operationId: createMessage
+      servers:
+        - url: https://directus.visualhive.co
+          description: Directus database server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - agent
+                - conversation
+                - messageText
+              properties:
+                agent:
+                  type: string
+                  enum: [assistant, user]
+                  description: Who sent the message
+                conversation:
+                  type: string
+                  format: uuid
+                  description: UUID of the conversation this message belongs to
+                messageText:
+                  type: string
+                  description: The actual message content
+                feedback:
+                  type: string
+                  description: Feedback rating for the message
+                  nullable: true
+                feedbackText:
+                  type: string
+                  description: Detailed feedback text
+                  nullable: true
+                cards:
+                  type: object
+                  description: Associated cards data (JSON)
+                  nullable: true
+      responses:
+        '201':
+          description: Message created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+
+  /items/message/{id}:
+    get:
+      tags:
+        - Directus Server
+      summary: Get message by ID
+      description: Retrieve a specific message by its ID
+      operationId: getMessageById
+      servers:
+        - url: https://directus.visualhive.co
+          description: Directus database server
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Message ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Message retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Message'
+        '404':
+          description: Message not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+
+    patch:
+      tags:
+        - Directus Server
+      summary: Update message
+      description: Update an existing message (typically used for adding feedback)
+      operationId: updateMessage
+      servers:
+        - url: https://directus.visualhive.co
+          description: Directus database server
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Message ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                feedback:
+                  type: string
+                  description: Feedback rating for the message
+                feedbackText:
+                  type: string
+                  description: Detailed feedback text
+                messageText:
+                  type: string
+                  description: Updated message content
+                cards:
+                  type: object
+                  description: Updated cards data (JSON)
+      responses:
+        '200':
+          description: Message updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Message'
+        '404':
+          description: Message not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+
+    delete:
+      tags:
+        - Directus Server
+      summary: Delete message
+      description: Delete a specific message
+      operationId: deleteMessage
+      servers:
+        - url: https://directus.visualhive.co
+          description: Directus database server
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Message ID
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Message deleted successfully
+        '404':
+          description: Message not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectusError'
+
+  # Bulk Operations
+  /items/message/bulk:
+    get:
+      tags:
+        - Directus Server
+      summary: Get messages for conversation
+      description: Get all messages for a specific conversation, ordered by creation date
+      operationId: getConversationMessages
+      servers:
+        - url: https://directus.visualhive.co
+          description: Directus database server
+      parameters:
+        - name: filter[conversation][_eq]
+          in: query
+          required: true
+          description: Conversation UUID to filter messages
+          schema:
+            type: string
+            format: uuid
+        - name: sort
+          in: query
+          description: Sort order
+          schema:
+            type: string
+            default: "date_created"
+      responses:
+        '200':
+          description: Conversation messages retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+
+components:
+  securitySchemes:
+    DirectusApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Directus API key - use format: Bearer {api_key}'
+
+  schemas:
+    # N8N Request/Response Schemas
+    FirstResponderRequest:
+      type: object
+      required:
+        - userPrompt
+        - id
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address
+          example: "user@example.com"
+        messageHistory:
+          type: array
+          description: History of messages in the conversation
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Message content
+              timeElapsed:
+                type: integer
+                description: Time elapsed in seconds
+              id:
+                type: string
+                description: Unique message identifier
+        elapsedTime:
+          type: integer
+          description: Time elapsed since the conversation started (in seconds)
+          example: 1
+        name:
+          type: string
+          description: User's full name
+          example: "Bogdan"
+        job:
+          type: string
+          description: User's job title
+          example: "Founder"
+        interests:
+          type: string
+          description: User's interests in the conference event
+        goals:
+          type: string
+          description: User's goals at the conference event
+        userType:
+          type: string
+          description: Type of user
+          example: "Technical Professional"
+        department:
+          type: string
+          description: User's department
+          example: "Data and Analytics"
+        userPrompt:
+          type: string
+          description: User's current message or question
+          example: "How can I access the app?"
+        id:
+          type: string
+          description: Unique identifier for the current message
+          example: "H8FtVZLDEt"
+
+    ChatRequest:
+      type: object
+      required:
+        - email
+        - userPrompt
+        - session
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+        name:
+          type: string
+          description: User's full name
+        job:
+          type: string
+          description: User's job title
+        interests:
+          type: string
+          description: User's interests in the conference event
+        goals:
+          type: string
+          description: User's goals at the conference event
+        industry:
+          type: string
+          description: User's professional industry
+        skills:
+          type: string
+          description: The user's professional skills
+        userPrompt:
+          type: string
+          description: User's message or question
+        session:
+          type: string
+          description: Unique identifier for the chat session
+
+    ChatResponse:
+      type: object
+      properties:
+        output:
+          type: object
+          properties:
+            assistantResponse:
+              type: string
+              description: AI-generated response to the user query
+            resultsArray:
+              type: array
+              description: Array of relevant records used to generate the response
+              items:
+                type: object
+                properties:
+                  Record_id:
+                    type: string
+                    description: Unique identifier of the record
+                  collection_name:
+                    type: string
+                    description: Name of the database collection
+                  why_chosen:
+                    type: string
+                    description: Explanation for why this record was chosen
+
+    CardsResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              metadata:
+                type: string
+                description: JSON string containing entity metadata
+              $similarity:
+                type: number
+                description: Similarity score indicating relevance to the prompt
+                minimum: 0
+                maximum: 1
+
+    AstraDbRecordResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          Response:
+            type: object
+            properties:
+              _id:
+                type: string
+                description: Record unique identifier
+              ExhibitorID:
+                type: string
+                description: Exhibitor unique identifier
+              CompanyName:
+                type: string
+                description: Name of the company
+              BoothNumber:
+                type: string
+                description: Booth number at the event
+              WebsiteURL:
+                type: string
+                description: Company website URL
+              LogoURL:
+                type: string
+                description: URL to company logo
+              Description:
+                type: string
+                description: Company description
+              IndustryFocus:
+                type: string
+                description: Industries the company focuses on (pipe-separated values)
+              ProductServiceCategories:
+                type: string
+                description: Categories of products or services (pipe-separated values)
+              TechnologyKeywords:
+                type: string
+                description: Technology-related keywords (pipe-separated values)
+              ProblemsSolved:
+                type: string
+                description: Problems the company solves (pipe-separated values)
+              TargetAttendeePositions:
+                type: string
+                description: Target job positions (pipe-separated values)
+              TargetCompanyTypes:
+                type: string
+                description: Target company types (pipe-separated values)
+              TargetGeographicMarkets:
+                type: string
+                description: Target geographic markets (pipe-separated values)
+              CompanySize:
+                type: string
+                description: Company size category
+              CompanySizeNr:
+                type: string
+                description: Company size range
+              ExhibitorGoals:
+                type: string
+                description: Exhibitor goals at the event (pipe-separated values)
+              Event:
+                type: string
+                description: Event name
+              content:
+                type: string
+                description: Formatted content information
+              metadata:
+                type: string
+                description: Additional metadata in JSON string format
+          metadata:
+            type: string
+            description: Metadata in JSON string format
+          CollectionName:
+            type: string
+            description: Name of the database collection
+
+    # Directus Schemas
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique conversation identifier
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        title:
+          type: string
+          description: Title of the conversation
+          example: "Conference Questions"
+        date_created:
+          type: string
+          format: date-time
+          description: When the conversation was created
+        date_updated:
+          type: string
+          format: date-time
+          description: When the conversation was last updated
+        user_created:
+          type: string
+          description: ID of the user who created the conversation
+        user_updated:
+          type: string
+          description: ID of the user who last updated the conversation
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique message identifier
+          example: 1
+        agent:
+          type: string
+          enum: [assistant, user]
+          description: Who sent the message
+          example: "user"
+        conversation:
+          type: string
+          format: uuid
+          description: UUID of the conversation this message belongs to
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        feedback:
+          type: string
+          nullable: true
+          description: Feedback rating for the message
+          example: "positive"
+        messageText:
+          type: string
+          description: The actual message content
+          example: "Can I cancel my pass and get a refund?"
+        cards:
+          type: object
+          nullable: true
+          description: Associated cards data (JSON)
+        feedbackText:
+          type: string
+          nullable: true
+          description: Detailed feedback text
+          example: "This answer was very helpful"
+        date_created:
+          type: string
+          format: date-time
+          description: When the message was created
+        date_updated:
+          type: string
+          format: date-time
+          description: When the message was last updated
+        user_created:
+          type: string
+          description: ID of the user who created the message
+        user_updated:
+          type: string
+          description: ID of the user who last updated the message
+
+    DirectusMetadata:
+      type: object
+      properties:
+        total_count:
+          type: integer
+          description: Total number of items available
+        filter_count:
+          type: integer
+          description: Number of items after filtering
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        code:
+          type: string
+          description: Error code
+      required:
+        - error
+
+    DirectusError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error message
+              extensions:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Error code
+
+security:
+  - DirectusApiKey: []
+
+externalDocs:
+  description: Find more info about Erleah
+  url: https://erleah.com
