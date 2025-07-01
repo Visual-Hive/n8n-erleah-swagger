@@ -12,9 +12,9 @@ info:
     Each endpoint is clearly tagged to indicate which server it belongs to.
 
 servers:
-  - url: https://n8n-sandbox.visualhive.co/webhook
+  - url: https://n8n-swagger.visualhive.co/webhook
     description: N8N workflow server - AI chat, data processing, and webhooks
-  - url: https://directus.visualhive.co
+  - url: https://directus-swagger.visualhive.co
     description: Directus database server - Content management and database operations
 
 tags:
@@ -39,7 +39,7 @@ paths:
       description: A simple test endpoint that returns an OK response to verify server status
       operationId: healthCheck
       servers:
-        - url: https://n8n-sandbox.visualhive.co/webhook
+        - url: https://n8n-swagger.visualhive.co/webhook
           description: N8N workflow server
       responses:
         '200':
@@ -67,7 +67,7 @@ paths:
       description: Get a quick response to fill the time before the full chatbot response. This provides immediate feedback to users while the main AI processes their request.
       operationId: firstResponder
       servers:
-        - url: https://n8n-sandbox.visualhive.co/webhook
+        - url: https://n8n-swagger.visualhive.co/webhook  
           description: N8N workflow server
       requestBody:
         required: true
@@ -100,7 +100,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /astraDbRecord:
+  /astra-db-record:
     post:
       tags:
         - N8N Server
@@ -108,7 +108,7 @@ paths:
       description: Retrieves a specific record from AstraDB based on the provided record ID. Used to fetch detailed information about exhibitors, sessions, or speakers.
       operationId: getAstraDbRecord
       servers:
-        - url: https://n8n-sandbox.visualhive.co/webhook
+        - url: https://n8n-swagger.visualhive.co/webhook
           description: N8N workflow server
       requestBody:
         required: true
@@ -192,61 +192,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /getCards:
-    post:
-      tags:
-        - N8N Server
-      summary: Get Cards
-      description: Retrieves relevant cards (sessions, exhibitors, or speakers) based on user prompt and search criteria using vector similarity
-      operationId: getCards
-      servers:
-        - url: https://n8n-sandbox.visualhive.co/webhook
-          description: N8N workflow server
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                prompt:
-                  type: string
-                  description: Vector search prompt, using user profile and/or user request
-                  example: "sessions related to AI tech for a marketing manager looking to improve their AI knowledge"
-                action:
-                  type: string
-                  description: Type of record to search for
-                  enum: [find_sessions, find_exhibitors, find_speakers]
-                  example: "find_sessions"
-                limit:
-                  type: integer
-                  description: Maximum number of results to return
-                  default: 10
-                  minimum: 1
-                  maximum: 50
-              required:
-                - prompt
-                - action
-      responses:
-        '200':
-          description: Cards retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CardsResponse'
-        '400':
-          description: Invalid search parameters
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Server error during search
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
   # ============ DIRECTUS SERVER ENDPOINTS ============
   
   # Conversation CRUD Operations
@@ -258,7 +203,7 @@ paths:
       description: Retrieve all conversations from the database with optional filtering and pagination
       operationId: getAllConversations
       servers:
-        - url: https://directus.visualhive.co
+        - url: https://directus-swagger.visualhive.co
           description: Directus database server
       parameters:
         - name: limit
@@ -1023,6 +968,9 @@ components:
         user_updated:
           type: string
           description: ID of the user who last updated the conversation
+        messages:
+          type: array
+          description: Array of IDs of messages related to this conversation
 
     Message:
       type: object
@@ -1033,19 +981,14 @@ components:
           example: 1
         agent:
           type: string
-          enum: [assistant, user]
+          enum: [Agent, User]
           description: Who sent the message
-          example: "user"
+          example: "User"
         conversation:
           type: string
           format: uuid
           description: UUID of the conversation this message belongs to
           example: "550e8400-e29b-41d4-a716-446655440000"
-        feedback:
-          type: string
-          nullable: true
-          description: Feedback rating for the message
-          example: "positive"
         messageText:
           type: string
           description: The actual message content
@@ -1054,11 +997,6 @@ components:
           type: object
           nullable: true
           description: Associated cards data (JSON)
-        feedbackText:
-          type: string
-          nullable: true
-          description: Detailed feedback text
-          example: "This answer was very helpful"
         date_created:
           type: string
           format: date-time
